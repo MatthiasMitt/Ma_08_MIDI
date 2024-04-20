@@ -14,7 +14,7 @@ from midiutil.MidiFile import MIDIFile
 from random import choice, randint
 import sound
 import string
-from Ma_MIDI import Uhr
+from Ma_Util.Ma_MIDI import Uhr
 from Ma_MIDI import MelodieStueck
 
 class Bolero():
@@ -46,14 +46,21 @@ class Bolero():
 	def empfohleneGeschwindigkeit(self):
 		return self.SPEED
 
-	def einleitung(self,s1,s2):
+	def einleitung_veraltet(self,s1,s2):
 		s1.lade3(self.h1t1_2)
 		s2.lade3(self.h2tt)
 		s1.machMIDI()
 		s2.machMIDI()
-		print('time',uhr1.ist(),uhr2.ist())
 	
-	def refrain(self,s1,s2,mitAusklangS1):
+	def einleitungMelodie(self,s1):
+		s1.lade3(self.h1t1_2)
+		s1.machMIDI()
+		
+	def einleitungRythmus(self,s2):
+		s2.lade3(self.h2tt)
+		s2.machMIDI()
+		
+	def refrain_veraltet(self,s1,s2,mitAusklangS1):
 		s1.lade3(self.h1t3_4)
 		s2.lade3(self.h2tt) # Die linke Hand spielt immer das selbe.
 		s1.machMIDI()
@@ -95,8 +102,33 @@ class Bolero():
 		s1.machMIDI()
 		s2.machMIDI()
 		print('time',uhr1.ist(),uhr2.ist())
+	
+	def refrainMelodie(self,s1,mitAusklangS1):
+		''' Spiele die Melodie des Refrains
+		ohne Ausklang 17, mit Ausklang 18 Takte lang.
+		'''
+		s1.lade3(self.h1t3_4)
+		s1.machMIDI()
+		s1.lade3(self.h1t5_6)
+		s1.machMIDI()
+		s1.lade3(self.h1t7_9)
+		s1.machMIDI()
+		s1.lade3(self.h1t10_12)
+		s1.machMIDI()
+		s1.lade3(self.h1t13_14)
+		s1.machMIDI()
+		s1.lade3(self.h1t15_16)
+		s1.machMIDI()
+		s1.lade3(self.h1t17)
+		s1.machMIDI()
+		if mitAusklangS1:
+			s1.lade3(self.h1t18_20)
+		else:
+			s1.lade3(self.h1t18_19)
+		s1.machMIDI()
 		
-	def refrainNurS2(self,m):
+	
+	def refrainRythmus(self,m):
 		# m : MelodieStück
 		# t3_4)
 		m.lade3(self.h2tt) # Die linke Hand spielt immer das selbe.
@@ -122,17 +154,16 @@ class Bolero():
 		m.machMIDI()
 		
 	
-	def ausklang(self,s1,s2):
-		#s1.lade3(h1t20)
+	def ausklangRythmus(self,s2):
 		s2.lade3(self.h2t20)
-		#s1.machMIDI()
 		s2.machMIDI()
-		print('time',uhr1.ist(),uhr2.ist())
+
+#-end-of-class Bolero
 
 
 def s():
 	'''
-	Breche den MIDI-Player an.
+	Breche den MIDI-Player ab.
 	
 	Lässt sich leider nur in Python 2 so einfach auf der Kommandozeile aufrufen.
 	'''
@@ -140,52 +171,106 @@ def s():
 
 
 
-# Configure a MIDI file with two tracks with two channels:
-# addProgramChange(self,track, channel, time, program):
-# addControllerEvent(self,channel,time,eventType, paramerter1):
-tr0 = 0
-ch0 = 0
-tr1 = 1
-ch1 = 1
-tr2 = 2
-ch2 = 2
+#-main
+#=====
+print('Bolero')
+print('======')
 
-uhr1 = Uhr()
-uhr2 = Uhr()
-uhr3 = Uhr(zeige=1)
-s1 = MelodieStueck()
-s2 = MelodieStueck()
-s3 = MelodieStueck()
+# Konstanten
+time0 = 0 # Für alles was am Anfang passieren soll.
+
+
+# Objekte
+#--------
+midi = MIDIFile(4)
+uhr1 = Uhr(name='Uhr.1')
+uhr2 = Uhr(name='Uhr.2')
+uhr3 = Uhr(name='Uhr.3')
+uhr4 = Uhr(name='Uhr.4')
+s1   = MelodieStueck()
+s2   = MelodieStueck()
+s3   = MelodieStueck()
+s4   = MelodieStueck()
 bolero = Bolero()
+
 speed = bolero.empfohleneGeschwindigkeit()
-midi = MIDIFile(3)
-midi.addTrackName(tr0, 0, 'rechte Hand 1.Instrument')
-midi.addTempo(tr0, 0, speed)
-midi.addControllerEvent(tr0,ch0,0,10,3) # 10 == OA == 'pan' : links
-midi.addTrackName(tr1,0, 'linke Hand')
-midi.addTempo(tr1, 0, speed)
-midi.addControllerEvent(tr1,ch0,0,10,122) #rechts
-midi.addTrackName(tr2, 0, 'rechte Hand 1.Instrument')
-midi.addTempo(tr2, 0, speed)
-midi.addControllerEvent(tr2,ch2,0,10,60) # 10 == OA == 'pan' : mitte
 
+# Spuren
+#-------
+tr0 = 0
+midi.addTrackName(tr0, time0, 'rechte Hand 1.Instrument')
+midi.addTempo(    tr0, time0, speed)
+
+tr1 = 1
+midi.addTrackName(tr1, time0, 'linke Hand')
+midi.addTempo(    tr1, time0, speed)
+
+tr2 = 2
+midi.addTrackName(tr2, time0, 'rechte Hand 1.Instrument')
+midi.addTempo(    tr2, time0, speed)
+
+tr3 = 3
+midi.addTrackName(tr3, time0, 'für Lotte.Instrument')
+midi.addTempo(    tr3, time0, speed)
+
+# Kanäle == Instrumente
+ch0 = 0
+midi.addProgramChange(  tr0, ch0, time0, 74 ) #,'Bassflöte')
+midi.addControllerEvent(tr0, ch0, time0,10,3) # 10 == OA == 'pan' : links
+
+ch1 = 1
+midi.addProgramChange(  tr1, ch1, time0,  0 ) #  Klavier
+midi.addControllerEvent(tr1, ch1, time0,10,60) # 10 == OA == 'pan' : mitte
+
+ch2 = 2
+midi.addProgramChange(  tr2, ch2, time0, 40 ) #'Geige'
+midi.addControllerEvent(tr2, ch2, time0,10,122) #rechts
+
+ch3 = 3
+midi.addProgramChange(  tr3, ch3, time0, 42 ) #'G?'#19
+midi.addControllerEvent(tr3, ch3, time0,10,100) # halb rechts
+
+# Verbinde Melodie-Stück mit Spur, Kanal, Uhr,...
 #
-midi.addProgramChange(tr0, ch0, 0, 74 ) #,'Bassflöte')
-midi.addProgramChange(tr1, ch1, 0,  0 ) #  Klavier
-midi.addProgramChange(tr2, ch2, 0, 40 ) #'Geige'
-
 s1.verbindeMIDI(midi,tr0,ch0, uhr1, 1.0/4.0, laut=70)
 s2.verbindeMIDI(midi,tr1,ch1, uhr2, 1.0/4.0, laut=40)
-s3.verbindeMIDI(midi,tr2,ch2, uhr3, 1.0/4.0)
+s3.verbindeMIDI(midi,tr2,ch2, uhr3, 1.0/4.0, laut=80)
+s4.verbindeMIDI(midi,tr3,ch3, uhr4, 1.0/4.0)
 
-bolero.einleitung(s1,s2)
-bolero.refrain(s1,s2,False)
-uhr3.sync(uhr1)
+# Erzeuge die Noten für die Musik
+#--------------------------------
+bolero.einleitungMelodie(s1)
+bolero.einleitungRythmus(s2)
+uhr2.sync(uhr1)
+
+bolero.refrainMelodie(s1,False)
+bolero.refrainRythmus(s2)
+uhr1.sync(uhr2)
+uhr3.vorstellen(uhr2)
+
 s1.leiser()
-bolero.refrain(s3,s2,True)
-bolero.refrainNurS2(s1)
-bolero.ausklang(s3,s2)
+bolero.refrainMelodie(s3,False)
+bolero.refrainRythmus(s2)
+bolero.refrainRythmus(s1)
+uhr3.zurueckstellen(uhr2)
+uhr1.sync(uhr2)
+uhr4.vorstellen(uhr2)
 
+s3.leiser()
+bolero.refrainMelodie(s4,True)
+bolero.refrainRythmus(s3)
+bolero.refrainRythmus(s2)
+bolero.refrainRythmus(s1)
+uhr4.zurueckstellen(uhr2)
+uhr1.sync(uhr2)
+uhr3.sync(uhr2)
+
+bolero.ausklangRythmus(s3)
+bolero.ausklangRythmus(s2)
+bolero.ausklangRythmus(s1)
+
+# und spiele die Musik vor.
+#--------------------------
 # Write output file:
 with open('output.mid', 'wb') as f:  # p2to3: 'w' --> 'wb'
 	midi.writeFile(f)
