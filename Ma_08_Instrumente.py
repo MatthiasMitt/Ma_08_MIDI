@@ -1,10 +1,19 @@
-#old: #! python2
 # -*- coding: utf-8 -*-
+modulname = 'Ma_08_Instrumente'
+_c_ = '(c) 2024, Matthias Mittelstein, Germany, 23816 Neversdorf, Hauptstraße 23'
 
-# NOTE: The first line in this script specified that it should always be run using Python 2.7.
-# The `midiutil` module was not available for Python 3.
+import sys
+import os
+b2 = os.path.realpath(__file__).split("/")
+b4 = "/".join(b2[0:-2]) 
+b5 = "/".join(b2[0:-1])
+# 'import' soll auch in dem Ordner suchen, in dem dises Programm gespeichet ist.
+sys.path.insert(1,b5)
+# 'import' soll auch in dem umfassenden Ordner suchen, wo es hoffentlich das
+# Hilfspaket 'Ma_Util' gibt. Unabhänge davon, wie und von wo aus gestartet wurde.
+sys.path.insert(1,b4)
 
-# But now it is.
+# Das `midiutil` module scheint es nur bei Pythonista zu geben.
 
 '''Generates a MIDI file with 12 random notes in C major, using the midiutil module. The instrument is also picked randomly. The result is then played with the sound.MIDIPlayer class.
 If nothing happens, make sure that your device isn't muted.
