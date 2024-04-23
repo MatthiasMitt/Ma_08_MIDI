@@ -24,7 +24,7 @@ from random import choice, randint
 import sound
 import time
 import console
-from Ma_MIDI import geraete
+from Ma_Util.Ma_MIDI import geraete
 
 
 def play(geraet):
