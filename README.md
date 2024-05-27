@@ -15,3 +15,8 @@ Ma_08_Bolero.py
 
 Spiele einen Anfang einer vereinfachten Fassung vom
 berümten "Bolero".
+
+Speicherort
+===========
+
+https://github.com/MatthiasMitt/Ma_08_MIDI
