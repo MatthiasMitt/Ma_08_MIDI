@@ -27,7 +27,7 @@ from random import choice, randint
 import sound
 import string
 from Ma_Util.Ma_MIDI import Uhr
-from Ma_MIDI import MelodieStueck
+from Ma_Util.Ma_MIDI import MelodieStueck
 
 class Bolero():
 	def __init__(self):
@@ -222,7 +222,7 @@ midi.addTrackName(tr2, time0, 'rechte Hand 1.Instrument')
 midi.addTempo(    tr2, time0, speed)
 
 tr3 = 3
-midi.addTrackName(tr3, time0, 'für Lotte.Instrument')
+midi.addTrackName(tr3, time0, 'fuer Lotte.Instrument')
 midi.addTempo(    tr3, time0, speed)
 
 # Kanäle == Instrumente
